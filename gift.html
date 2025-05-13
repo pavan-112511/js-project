@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gift Cards - Steal Deals</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 30px 0;
+      color: #232f3e;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-img {
+      background-color: #ff9900;
+      padding: 30px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #232f3e;
+    }
+
+    .card-price {
+      color: #b12704;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      background-color: #ffa41c;
+      color: #111;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #ff9900;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎁 Gift Cards</h1>
+  <div class="grid-container" id="giftCards"></div>
+
+  <script>
+    const giftCardData = [];
+
+    for (let i = 1; i <= 30; i++) {
+      giftCardData.push({
+        title: ` Gift Card ₹${i * 100}`,
+        price: i * 100
+      });
+    }
+
+    const container = document.getElementById('giftCards');
+
+    giftCardData.forEach(card => {
+      const cardElement = document.createElement('div');
+      cardElement.className = 'card';
+      cardElement.innerHTML = `
+        <div class="card-img">GIFT CARD</div>
+        <div class="card-body">
+          <div class="card-title">${card.title}</div>
+          <div class="card-price">₹${card.price}</div>
+          <button class="btn">Buy Now</button>
+        </div>
+      `;
+      container.appendChild(cardElement);
+    });
+  </script>
+</body>
+</html>

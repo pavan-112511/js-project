@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Steal Deals Cart</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .product-card, .cart-item {
+      background: white;
+      padding: 15px;
+      margin: 15px auto;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+
+    .product-card img, .cart-item img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .item-title {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .price {
+      color: green;
+      margin: 5px 0;
+    }
+
+    .btn {
+      padding: 10px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: darkgreen;
+    }
+
+    .remove-btn {
+      background-color: red;
+      margin-top: 10px;
+    }
+
+    .remove-btn:hover {
+      background-color: darkred;
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>🛠️ Steel Deals</h1>
+
+
+
+  <h2>🛒 Your Cart</h2>
+  <div id="cartItems"></div>
+  <div id="total" class="total">Total Outstanding: ₹0</div>
+  <div style="text-align: center;">
+    <button id="buyNowBtn" class="btn"  onclick="buyNow()" style="text-decoration:none; color:white;background-color: gray;"><a href="./buynow.html">Buy Now</a></button>
+  </div>
+
+  <script>
+    const container = document.getElementById('cartItems');
+    const totalContainer = document.getElementById('total');
+    const buyNowBtn = document.getElementById('buyNowBtn');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function addToCart() {
+      const item = {
+        title: "Steel Rod",
+        desc: "High quality steel rod for construction.",
+        price: 450,
+        image: "https://via.placeholder.com/400x200.png?text=Steel+Rod"
+      };
+ 
+  
+
+
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+    }
+
+    function updateCart() {
+      container.innerHTML = "";
+      let totalAmount = 0;
+
+      if (cart.length ===0) {
+        container.innerHTML = "<p style='text-align:center;'>Your cart is empty.</p>";
+        totalContainer.innerHTML = "Total Outstanding: ₹0";
+        buyNowBtn.disabled = true;
+      } else {
+        cart.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.classList.add('cart-item');
+          div.innerHTML = `
+            <img src="https://static.vecteezy.com/system/resources/previews/022/597/173/non_2x/3d-order-online-shop-png.png" alt="${item.title}">
+            <div class="item-title">${item.title}</div>
+            <div>${item.desc}</div>
+            <div class="price">${item.price}$</div>
+            <button class="remove-btn btn" onclick="removeFromCart(${index})">Remove</button>
+          `;
+          container.appendChild(div);
+          totalAmount += item.price;
+        });
+
+        totalContainer.innerHTML = `Total Outstanding: ₹${totalAmount}`;
+        buyNowBtn.disabled = false;
+      }
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+    }
+
+    function buyNow() {
+  if (cart.length > 0) {
+    window.location.href = 'buynow.html';
+  } else {
+    alert("Your cart is empty.");
+  }
+}
+
+
+    function buyNow() {
+      alert("Proceeding to checkout...");
+      localStorage.removeItem('cart');
+      cart = [];
+      updateCart();
+    }
+
+    updateCart();
+  </script>
+
+</body>
+</html>

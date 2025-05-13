@@ -1,0 +1,388 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Steal Deals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <style>
+   * { 
+  box-sizing: border-box; 
+}
+
+body { 
+  margin: 0; 
+  font-family: Arial, sans-serif; 
+  background-color: #f3f3f3; 
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #005bb5;
+  color: white;
+  padding: 10px 20px;
+}
+
+.logo { 
+  height: 50px; 
+  max-width: 150px; 
+}
+
+.search-container { 
+  flex: 1; 
+  display: flex; 
+  justify-content: center; 
+}
+
+.search-container input {
+  width: 50%; 
+  padding: 8px 12px; 
+  border-radius: 5px; 
+  border: none; 
+  font-size: 16px;
+}
+
+.right-controls { 
+  display: flex; 
+  align-items: center; 
+  gap: 15px; 
+}
+
+.hamburger { 
+  font-size: 24px; 
+  cursor: pointer; 
+}
+
+.login-btn {
+  background-color: white; 
+  color: #005bb5; 
+  border: none; 
+  padding: 8px 14px;
+  border-radius: 5px; 
+  font-weight: bold; 
+  cursor: pointer;
+}
+
+.cart-icon { 
+  font-size: 22px; 
+  cursor: pointer; 
+  color: white; 
+  position: relative; 
+}
+
+.cart-count {
+  position: absolute; 
+  top: -5px; 
+  right: -10px; 
+  background: red; 
+  color: white;
+  font-size: 12px; 
+  border-radius: 50%; 
+  padding: 2px 5px;
+}
+
+.sidebar {
+  position: fixed; 
+  top: 0; 
+  left: -250px; 
+  width: 250px; 
+  height: 100%;
+  background-color: white; 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease; 
+  z-index: 1000; 
+  padding: 20px;
+}
+
+.sidebar.open { 
+  left: 0; 
+}
+
+.sidebar a {
+  display: block; 
+  color: #005bb5; 
+  text-decoration: none; 
+  font-size: 18px;
+  margin-bottom: 15px; 
+  font-weight: bold;
+}
+
+.overlay {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100vw; 
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); 
+  display: none; 
+  z-index: 999;
+}
+
+.overlay.active { 
+  display: block; 
+}
+
+h1 { 
+  text-align: center; 
+  margin-top: 20px; 
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* First row with 3 cards */
+  gap: 20px;
+  padding: 20px;
+}
+
+/* After the first 3 cards, make the following rows have 2 cards each */
+.grid-container .card:nth-child(n+4) {
+  grid-template-columns: repeat(2, 1fr); /* 2 cards per line after the first 3 cards */
+}
+
+.card {
+  background: #fff; 
+  border-radius: 10px; 
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%;
+}
+
+.card img { 
+  width: 100%; 
+  height: 180px; 
+  object-fit: cover; 
+}
+
+.card-body {
+  padding: 15px; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  flex-grow: 1;
+}
+
+.title { 
+  font-weight: bold; 
+  font-size: 1.1rem; 
+  margin-bottom: 5px; 
+}
+
+.desc { 
+  color: #555; 
+  font-size: 0.9rem; 
+  margin-bottom: 10px; 
+}
+
+.price { 
+  color: green; 
+  font-weight: bold; 
+  margin-bottom: 10px; 
+}
+
+.buy-btn {
+  padding: 10px; 
+  background-color: #007bff; 
+  color: white; 
+  border: none;
+  border-radius: 5px; 
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Added smooth transition */
+}
+
+/* Hover effect for the button */
+.buy-btn:hover { 
+  background-color: #0056b3; 
+}
+
+/* Ensure all cards have equal height */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-container input { 
+    width: 70%; 
+  }
+  .grid-container { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (max-width: 500px) {
+  .grid-container { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img class="logo" src="https://localstealsanddeals.com/cdn/shop/files/LOSAD_logo.png?v=1620076402&width=1920" alt="Logo" />
+    <div class="search-container">
+      <input type="text" placeholder="Search deals..." oninput="searchDeals(this.value)" />
+    </div>
+    <div class="right-controls">
+      <i class="fas fa-bars hamburger" onclick="toggleSidebar()"></i>
+      <button class="login-btn"><a href="./register.html" style="text-decoration: none;">Login</a></button>
+      <div style="position:relative">
+        <i class="fas fa-shopping-cart cart-icon" onclick="goToCart()"></i>
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <a href="./landing.html">Home</a>
+
+  <a href="./gift.html">Gift Cards</a>
+    <a href="./help.html">Help</a>
+    <a href="./blog.html">Blogs</a>
+  </div>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <h1>🔥 Today's Steal Deals</h1>
+  <div class="grid-container" id="cardContainer"></div>
+
+  <script>
+    const deals = [
+      { title: "LINO cosmetics", desc: "Hydrates, smooths & protects your skin", price: 45, img: "https://localstealsanddeals.com/cdn/shop/collections/Lino_Banner.jpg?v=1746023625&width=3000" },
+      { title: "BIBB homes", desc: "Luxurious Egyptian cotton towel sets", price: 49, img: "https://localstealsanddeals.com/cdn/shop/collections/banner_1_8269b758-28e4-4ca7-a798-75b41637e270.png?v=1746450866" },
+      { title: "ICE box", desc: "The personal estate organization system", price: 48, img: "https://localstealsanddeals.com/cdn/shop/collections/ICEBOX_banner.webp?v=1736774694" },
+      { title: "SERENESITZ", desc: "The seat cushion for all-day comfort", price: 55, img: "https://localstealsanddeals.com/cdn/shop/collections/SERENESITZ_banner.webp?v=1732816067" },
+      { title: "CAMPANELLI", desc: "The ultimate multi-surface stain remover", price: 57, img: "https://localstealsanddeals.com/cdn/shop/collections/CAMPANELLI_banner.webp?v=1729518088" },
+      { title: "COTTAGE FORMS", desc: "Beautiful 5-piece reblooming daylilies", price: 51, img: "https://localstealsanddeals.com/cdn/shop/collections/Cottage_banner.webp?v=1745245648" },
+      { title: "ZIPPY SWEEPER PRO", desc: "Rechargeable, lightweight cordless sweeper", price: 60, img: "https://localstealsanddeals.com/cdn/shop/collections/banner_d0c62243-dee0-46f6-921c-8d71c8c15a19.png?v=1725974056" },
+      { title: "MINT", desc: "Dissolvable teeth whitening strips", price: 62, img: "https://localstealsanddeals.com/cdn/shop/collections/WPU5jRvovnAS8xWeD5u1nobI7z465qkv.png?v=1696342946" },
+      { title: "CORE MAX PRO", desc: "The total body training system", price: 64, img: "https://localstealsanddeals.com/cdn/shop/collections/SideShaper_banner.jpg?v=1737978570" },
+      { title: "RUCH CHARDE", desc: "Portable charger for all your devices", price: 46, img: "https://localstealsanddeals.com/cdn/shop/collections/xRjU2N3KEAuGcnEV5nAglqSSM6g2H1iK.webp?v=1709557444&width=1000" },
+      { title: "CORETEX BEAUTY", desc: "Salon-quality hair drying & styling tools", price: 45, img: "https://localstealsanddeals.com/cdn/shop/collections/d7e95b7JaGoIP5CRIMDh5KvRp5ajJU7x.webp?v=1744641232" },
+      { title: "STICKUP", desc: "Stylish, peel-and-stick window shades", price: 70, img: "https://localstealsanddeals.com/cdn/shop/collections/banner_3_f3d04974-d54d-4af2-9eb2-5a2f26299d24.webp?v=1740066070" },
+      { title: "MINOLETA", desc: "The ultimate dash & interior camera", price: 72, img: "https://localstealsanddeals.com/cdn/shop/collections/vy9oKficLNVeMOblDehLNtwjICxSqNGs-removebg-preview.png?v=1730300841" },
+      { title: "HYPERSWEEP", desc: "Powerful lightweight portable vacuum", price: 69, img: "https://localstealsanddeals.com/cdn/shop/collections/HyperSweep_banner.jpg?v=1707139143&width=3000" },
+      { title: "EASYNEST", desc: "Customizable memory foam wedge pillow set", price: 53, img: "https://localstealsanddeals.com/cdn/shop/collections/PJ3CDFV6xE3hVGlEpzIdNzyMbGsNB5ai.webp?v=1739380934&width=3000" }
+        
+    ];
+
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+     
+    function loginUser() {
+      alert("Login functionality is not implemented. Redirecting to login page...");
+    }
+
+    function goToCart() {
+      window.location.href = 'cart.html'; // Navigate to the cart page
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showHelp() {
+      alert("Need help? Contact support@steelstore.com");
+    }
+
+    function openBlogs() {
+      alert("Redirecting to our blog page!");
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      document.getElementById('cartCount').innerText = cart.length;
+    }
+
+    function addToCart(index) {
+      const item = deals[index];
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      alert(`${item.title} added to cart.`);
+    }
+
+    function searchDeals(query) {
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(query.toLowerCase()) ? "block" : "none";
+      });
+    }
+
+
+    function createCards() {
+      const container = document.getElementById('cardContainer');
+      container.innerHTML = "";
+      deals.forEach((deal, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+          <img src="${deal.img}" alt="${deal.title}">
+          <div class="card-body">
+            <div class="title">${deal.title}</div>
+            <div class="desc">${deal.desc}</div>
+            <div class="price">₹${deal.price}$</div>
+            <button class="buy-btn" onclick="addToCart(${index})">Add to Cart</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    createCards();
+    updateCartCount();
+  </script>
+
+  <footer style="background-color: #232f3e; color: white; padding: 40px 0; text-align: center;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px;">
+      <div style="flex: 1; min-width: 220px;">
+        <h3 style="color: #ff9900;">Steal Deals</h3>
+        <p>Your go-to place for quality steel deals at unbeatable prices!</p>
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <h4 style="color: #ff9900;">Quick Links</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li><a href="index.html" style="color: white; text-decoration: none;">Home</a></li>
+          <li><a href="about.html" style="color: white; text-decoration: none;">About Us</a></li>
+          <li><a href="contact.html" style="color: white; text-decoration: none;">Contact</a></li>
+          <li><a href="help.html" style="color: white; text-decoration: none;">Help</a></li>
+          <li><a href="blog.html" style="color: white; text-decoration: none;">Blog</a></li>
+        </ul>
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <h4 style="color: #ff9900;">Contact Us</h4>
+        <p>Steal Deals, Local Steel Hub</p>
+        <p>Email: support@stealdeals.com</p>
+        <p>Phone: +91 123 456 7890</p>
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <h4 style="color: #ff9900;">Follow Us</h4>
+        <ul style="list-style: none; padding: 0; display: flex; gap: 15px;">
+          <li><a href="https://facebook.com" style="color: white; font-size: 20px; text-decoration: none;">Facebook</a></li>
+          <li><a href="https://twitter.com" style="color: white; font-size: 20px; text-decoration: none;">Twitter</a></li>
+          <li><a href="https://instagram.com" style="color: white; font-size: 20px; text-decoration: none;">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="border-top: 1px solid #444; padding-top: 20px;">
+      <p style="font-size: 14px;">&copy; 2025 Steal Deals. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+

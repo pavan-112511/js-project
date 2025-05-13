@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Buy Now - Steal Deals</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      max-width: 500px;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #28a745;
+    }
+
+    .summary {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .summary-item {
+      margin: 10px 0;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ Order Confirmed!</h1>
+    <p>Thank you for your purchase. Here's what you ordered:</p>
+    <p>it was deliverd in 50 minutes</p>
+    <div id="orderSummary" class="summary"></div>
+    <div style="margin-top: 20px;">
+      <button class="btn" onclick="goHome()">Back to Home</button>
+    </div>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const summary = document.getElementById('orderSummary');
+    let total = 0;
+
+    if (cart.length =0) {
+      summary.innerHTML = "<p>Your cart was empty.</p>";
+    } else{
+      cart.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "summary-item";
+        div.innerText = `${item.title} - ₹${item.price}$`;
+        summary.appendChild(div);
+        total += item.price;
+      });
+
+      const totalDiv = document.createElement("div");
+      totalDiv.className = "summary-item";
+      totalDiv.innerHTML = `<strong>Total Paid: ₹${total}</strong>`;
+      summary.appendChild(totalDiv);
+
+      // Clear cart after showing
+      localStorage.removeItem('cart');
+    }
+
+    function goHome() {
+  window.location.href = "index.html";
+}
+
+  </script>
+</body>
+</html>
